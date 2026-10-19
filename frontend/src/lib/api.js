@@ -29,7 +29,7 @@ function getCookie(name) {
 }
 
 export async function ensureCsrf() {
-  await fetch(`${BASE}/api/admin/auth/csrf/`, { credentials: "include" });
+  await fetch(`${BASE}/backend/admin/auth/csrf/`, { credentials: "include" });
 }
 
 export function toFormData(obj) {
@@ -47,6 +47,7 @@ export function toFormData(obj) {
 async function request(method, path, body) {
   const headers = { Accept: "application/json" };
   const opts = { method, credentials: "include", headers };
+  res = await fetch(BASE + path.replace(/^\/api\//, "/backend/"), opts);
 
   if (method !== "GET") {
     if (!getCookie("csrftoken")) await ensureCsrf();
