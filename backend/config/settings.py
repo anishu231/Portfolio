@@ -42,14 +42,16 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
 ]
-if USE_CLOUDINARY:
-    INSTALLED_APPS += ["cloudinary_storage"]  # must be before staticfiles
 INSTALLED_APPS += ["django.contrib.staticfiles"]
 if USE_CLOUDINARY:
-    INSTALLED_APPS += ["cloudinary"]
+    DEFAULT_STORAGE = {"BACKEND": "core.cloudinary_storage.CloudinaryStorage"}
 if USE_S3:
     INSTALLED_APPS += ["storages"]
 INSTALLED_APPS += ["corsheaders", "rest_framework", "core"]
+if USE_CLOUDINARY:
+    import cloudinary
+
+    cloudinary.config(secure=True)
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

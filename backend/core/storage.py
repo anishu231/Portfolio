@@ -5,9 +5,9 @@ from django.core.files.storage import FileSystemStorage
 def resume_storage():
     """PDFs need Cloudinary's 'raw' resource type; other backends use the default."""
     if getattr(settings, "USE_CLOUDINARY", False):
-        from cloudinary_storage.storage import RawMediaCloudinaryStorage
+        from .cloudinary_storage import RawCloudinaryStorage
 
-        return RawMediaCloudinaryStorage()
+        return RawCloudinaryStorage()
     if getattr(settings, "USE_S3", False):
         from django.core.files.storage import default_storage
 
