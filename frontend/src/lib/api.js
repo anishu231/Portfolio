@@ -76,9 +76,13 @@ async function request(method, path, body) {
   if (res.status === 204) return null;
 
   const type = res.headers.get("content-type") || "";
-  if (!type.includes("application/json")) {
-    // e.g. Vercel returned index.html because the proxy rule did not match
-    throw new ApiError(res.status, { detail: "API proxy is not configured (got a web page instead of JSON)." });
+    if (!type.includes("application/json")) {
+    throw new ApiError(res.status, {
+      detail:
+        res.status >= 500
+          ? `Server error (${res.status}). Check the backend logs.`
+          : `Unexpected response (${res.status}) instead of JSON.`,
+    });
   }
 
   const data = await res.json();
