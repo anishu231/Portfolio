@@ -65,8 +65,3 @@ class CloudinaryStorage(Storage):
 
 class RawCloudinaryStorage(CloudinaryStorage):
     resource_type = "raw"
-
-if USE_CLOUDINARY:
-    import cloudinary
-
-    cloudinary.config(secure=True)
