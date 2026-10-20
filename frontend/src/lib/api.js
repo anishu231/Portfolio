@@ -1,5 +1,10 @@
 const BASE = import.meta.env.VITE_API_BASE || "";
 
+// Browser talks to /backend/...; Vercel (and the Vite dev proxy) forward it to Django's /api/...
+function toUrl(path) {
+  return BASE + path.replace(/^\/api\//, "/backend/");
+}
+
 function flatten(data) {
   if (!data) return "";
   if (typeof data === "string") return data;
@@ -29,7 +34,7 @@ function getCookie(name) {
 }
 
 export async function ensureCsrf() {
-  await fetch(`${BASE}/backend/admin/auth/csrf/`, { credentials: "include" });
+  await fetch(toUrl("/api/admin/auth/csrf/"), { credentials: "include" });
 }
 
 export function toFormData(obj) {
@@ -47,14 +52,13 @@ export function toFormData(obj) {
 async function request(method, path, body) {
   const headers = { Accept: "application/json" };
   const opts = { method, credentials: "include", headers };
-  res = await fetch(BASE + path.replace(/^\/api\//, "/backend/"), opts);
 
   if (method !== "GET") {
     if (!getCookie("csrftoken")) await ensureCsrf();
     headers["X-CSRFToken"] = getCookie("csrftoken") || "";
   }
   if (body instanceof FormData) {
-    opts.body = body; // browser sets the multipart boundary itself
+    opts.body = body;
   } else if (body !== undefined) {
     headers["Content-Type"] = "application/json";
     opts.body = JSON.stringify(body);
@@ -62,15 +66,19 @@ async function request(method, path, body) {
 
   let res;
   try {
-    res = await fetch(BASE + path, opts);
+    res = await fetch(toUrl(path), opts);
   } catch {
     throw new ApiError(0, { detail: "Cannot reach the server. Is the backend running?" });
   }
   if (res.status === 204) return null;
 
-  let data = null;
-  try { data = await res.json(); } catch { /* non-JSON body */ }
+  const type = res.headers.get("content-type") || "";
+  if (!type.includes("application/json")) {
+    // e.g. Vercel returned index.html because the proxy rule did not match
+    throw new ApiError(res.status, { detail: "API proxy is not configured (got a web page instead of JSON)." });
+  }
 
+  const data = await res.json();
   if (!res.ok) {
     const expired =
       res.status === 401 ||
