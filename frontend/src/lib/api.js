@@ -1,8 +1,11 @@
 const BASE = import.meta.env.VITE_API_BASE || "";
 
-// Browser talks to /backend/...; Vercel (and the Vite dev proxy) forward it to Django's /api/...
+// Browser calls the Vercel function directly: /api/backend?path=profile/
+// Django's /api/<path> is forwarded by that function.
 function toUrl(path) {
-  return BASE + path.replace(/^\/api\//, "/backend/");
+  const clean = path.replace(/^\/api\//, "");
+  const [route, query = ""] = clean.split("?");
+  return `${BASE}/api/backend?path=${encodeURIComponent(route)}${query ? "&" + query : ""}`;
 }
 
 function flatten(data) {
