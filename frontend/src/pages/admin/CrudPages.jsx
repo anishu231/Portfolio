@@ -13,15 +13,21 @@ export function SkillsManager() {
   const fields = [
     { name: "name", label: "Skill name", required: true, maxLength: 80 },
     { name: "category", label: "Category", type: "select", options: CATEGORIES },
-    { name: "proficiency", label: "Proficiency (1–100)", type: "number", min: 1, max: 100 },
+    {
+      name: "proficiency", label: "Proficiency (1–100, optional)", type: "number", min: 1, max: 100,
+      hint: "Leave empty to hide the progress bar",
+    },
     { name: "icon", label: "Icon (emoji or name, optional)", maxLength: 60 },
     { name: "description", label: "Description", type: "textarea", rows: 3, maxLength: 300 },
   ];
   return (
     <CrudManager
       title="Skills" noun="skill" endpoint="/api/admin/skills/" fields={fields} sortable
-      defaults={{ name: "", category: "programming", proficiency: 50, icon: "", description: "" }}
-      describe={(s) => ({ title: `${s.icon ? s.icon + " " : ""}${s.name}`, subtitle: `${s.category_label} · ${s.proficiency}%` })}
+      defaults={{ name: "", category: "programming", proficiency: "", icon: "", description: "" }}
+      describe={(s) => ({
+        title: `${s.icon ? s.icon + " " : ""}${s.name}`,
+        subtitle: s.proficiency ? `${s.category_label} · ${s.proficiency}%` : s.category_label,
+      })}
     />
   );
 }

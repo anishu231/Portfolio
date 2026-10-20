@@ -18,8 +18,7 @@ function RecordForm({ noun, endpoint, fields, initial, onSaved, onCancel }) {
       const payload = {};
       fields.forEach((f) => {
         const val = v[f.name];
-        payload[f.name] = f.type === "date" && val === "" ? null : val;
-      });
+        payload[f.name] = (f.type === "date" || f.type === "number") && val === "" ? null : val; });
       if (initial.id) await api.patch(`${endpoint}${initial.id}/`, payload);
       else await api.post(endpoint, payload);
       toast.success(`${noun} saved.`);
