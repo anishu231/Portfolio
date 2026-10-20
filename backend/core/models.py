@@ -54,7 +54,7 @@ class Profile(SingletonModel):
 
     full_name = models.CharField(max_length=120, default="Your Name")
     title = models.CharField("Professional title", max_length=160, blank=True)
-    short_intro = models.CharField(max_length=300, blank=True)
+    short_intro = models.CharField(max_length=500, blank=True)
     about_me = models.TextField(blank=True)
     career_objective = models.TextField(blank=True)
     background_interests = models.TextField(blank=True)
@@ -95,7 +95,8 @@ class Skill(models.Model):
     description = models.CharField(max_length=300, blank=True)
     category = models.CharField(max_length=30, choices=CATEGORIES)
     proficiency = models.PositiveSmallIntegerField(
-        default=50, validators=[MinValueValidator(1), MaxValueValidator(100)]
+        null=True, blank=True,
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
     )
     icon = models.CharField(max_length=60, blank=True, help_text="Emoji or icon name")
     order = models.PositiveIntegerField(default=0)

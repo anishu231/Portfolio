@@ -145,6 +145,7 @@ class WebsiteSettingsSerializer(RemovableFilesMixin, serializers.ModelSerializer
 # ---------------------------------------------------------------- skills etc.
 class SkillSerializer(serializers.ModelSerializer):
     category_label = serializers.CharField(source="get_category_display", read_only=True)
+    proficiency = serializers.IntegerField(required=False, allow_null=True, min_value=1, max_value=100)
 
     class Meta:
         model = Skill
