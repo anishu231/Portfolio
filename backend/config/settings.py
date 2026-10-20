@@ -126,7 +126,7 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 if USE_CLOUDINARY:
-    DEFAULT_STORAGE = {"BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage"}
+    DEFAULT_STORAGE = {"BACKEND": "core.cloudinary_storage.CloudinaryStorage"}
 elif USE_S3:
     DEFAULT_STORAGE = {
         "BACKEND": "storages.backends.s3.S3Storage",
