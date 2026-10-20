@@ -198,3 +198,11 @@ if not DEBUG:
 
 # Upload limits (field-level validators enforce 5 MB images / 10 MB PDFs)
 DATA_UPLOAD_MAX_MEMORY_SIZE = 12 * 1024 * 1024
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "root": {"handlers": ["console"], "level": "INFO"},
+    "loggers": {"django.request": {"handlers": ["console"], "level": "ERROR", "propagate": False}},
+}
