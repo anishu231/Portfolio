@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    { "source": "/backend/:path*", "destination": "https://portfolio-b12h.onrender.com/api/:path*" },
+    { "source": "/backend/:path*", "destination": "/api/backend?path=:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
